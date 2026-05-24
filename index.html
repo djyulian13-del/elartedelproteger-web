@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>El Arte de Proteger | Seguridad real para tu vida · Julián Pacheco</title>
+<meta name="description" content="El Arte de Proteger: aprende a anticipar el peligro y reaccionar con confianza. Activa AEGIS, tu asistente de protección, y descubre tu nivel de riesgo en 2 minutos." />
+<meta name="keywords" content="seguridad personal, autodefensa, protección, el arte de proteger, Julián Pacheco, prevención, manual de seguridad" />
+<meta name="author" content="Julián Pacheco" />
+<meta name="robots" content="index, follow" />
+<link rel="canonical" href="https://elartedelproteger.com/" />
+<meta name="theme-color" content="#070405" />
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="El Arte de Proteger" />
+<meta property="og:title" content="El Arte de Proteger | Seguridad real para tu vida" />
+<meta property="og:description" content="Activa AEGIS, tu asistente de protección, descubre tu nivel de riesgo y aprende a reaccionar con confianza." />
+<meta property="og:url" content="https://elartedelproteger.com/" />
+<meta property="og:locale" content="es_MX" />
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="El Arte de Proteger | Seguridad real para tu vida" />
+<meta name="twitter:description" content="Activa AEGIS, tu asistente de protección, y descubre tu nivel de riesgo en 2 minutos." />
+<style>
+  :root{
+    --bg:#070405;
+    --bg2:#120607;
+    --ink:#f4eaea;
+    --muted:#8f7d80;
+    --accent:#ff2a36;       /* frecuencia */
+    --accent-dim:#8f0c14;
+    --amber:#ff5c5c;        /* el código */
+    --danger:#ff5a5a;
+    --green:#36d399;
+    --radius:16px;
+    --font:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    --mono:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:var(--font);
+    background:radial-gradient(120% 120% at 50% -10%, #2a070a 0%, var(--bg2) 38%, var(--bg) 100%);
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- capas de efecto global ---------- */
+  #scanlines{
+    position:fixed; inset:0; pointer-events:none; z-index:60;
+    background:repeating-linear-gradient(to bottom, rgba(255,255,255,.025) 0px, rgba(255,255,255,.025) 1px, transparent 1px, transparent 3px);
+    mix-blend-mode:overlay; opacity:.5;
+  }
+  #vignette{
+    position:fixed; inset:0; pointer-events:none; z-index:59;
+    box-shadow:inset 0 0 220px 40px rgba(0,0,0,.85);
+  }
+  #grain{position:fixed; inset:0; pointer-events:none; z-index:58; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  canvas#waves{position:fixed; inset:0; z-index:0; opacity:.55}
+
+  /* ---------- estructura de escenas ---------- */
+  .scene{
+    position:fixed; inset:0; z-index:5;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:28px; text-align:center;
+    opacity:0; visibility:hidden; transform:scale(1.02);
+    transition:opacity .7s ease, transform .7s ease, visibility .7s;
+  }
+  .scene.active{opacity:1; visibility:visible; transform:scale(1)}
+
+  .wrap{width:100%; max-width:560px; display:flex; flex-direction:column; align-items:center; gap:22px}
+
+  .eyebrow{
+    font-size:12px; letter-spacing:.42em; text-transform:uppercase; color:var(--accent);
+    font-family:var(--mono);
+  }
+  h1{font-size:clamp(30px,7vw,52px); line-height:1.05; font-weight:700; letter-spacing:-.5px}
+  h1 .thin{font-weight:300; opacity:.85}
+  p.lead{color:var(--muted); font-size:clamp(15px,3.6vw,18px); line-height:1.55; max-width:440px}
+
+  .btn{
+    appearance:none; border:none; cursor:pointer; font-family:var(--font);
+    font-size:16px; font-weight:600; letter-spacing:.02em;
+    padding:16px 30px; border-radius:999px; color:#04110f;
+    background:linear-gradient(180deg,var(--accent),var(--accent-dim));
+    box-shadow:0 0 0 1px rgba(255,42,54,.4), 0 14px 40px -12px rgba(255,42,54,.7);
+    transition:transform .15s ease, box-shadow .25s ease, filter .2s;
+  }
+  .btn:hover{transform:translateY(-2px); filter:brightness(1.08)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{
+    background:transparent; color:var(--muted);
+    box-shadow:none; font-weight:500; font-size:13px; padding:10px 18px;
+    text-decoration:underline; text-underline-offset:4px; letter-spacing:.04em;
+  }
+  .btn.ghost:hover{color:var(--ink); transform:none}
+  .btn.green{background:linear-gradient(180deg,#48e6ab,#1f9e74); box-shadow:0 0 0 1px rgba(54,211,153,.4),0 14px 40px -12px rgba(54,211,153,.7)}
+  .btn.danger{background:linear-gradient(180deg,#ff6b6b,#c23b3b); color:#fff}
+
+  .stack{display:flex; flex-direction:column; align-items:center; gap:14px}
+
+  /* sigilo / núcleo pulsante */
+  .core{
+    width:128px; height:128px; border-radius:50%;
+    display:grid; place-items:center; position:relative;
+    background:radial-gradient(circle at 50% 40%, rgba(255,42,54,.35), rgba(255,42,54,0) 70%);
+  }
+  .core::before,.core::after{
+    content:""; position:absolute; inset:0; border-radius:50%;
+    border:1px solid rgba(255,42,54,.5);
+    animation:ping 2.6s cubic-bezier(0,0,.2,1) infinite;
+  }
+  .core::after{animation-delay:1.3s}
+  @keyframes ping{0%{transform:scale(.7);opacity:.9}100%{transform:scale(2.1);opacity:0}}
+  .core .glyph{
+    width:74px;height:74px;border-radius:50%;
+    background:linear-gradient(160deg,#0b1a1f,#06262a);
+    border:1px solid rgba(255,42,54,.55);
+    display:grid;place-items:center;font-size:30px;color:var(--accent);
+    box-shadow:0 0 30px rgba(255,42,54,.5), inset 0 0 18px rgba(255,42,54,.25);
+  }
+
+  /* barra de "estableciendo frecuencia" */
+  .progress{width:280px; max-width:80vw; height:4px; border-radius:99px; background:rgba(255,255,255,.08); overflow:hidden}
+  .progress > i{display:block; height:100%; width:0; background:linear-gradient(90deg,var(--accent),var(--amber)); box-shadow:0 0 12px var(--accent)}
+  .status-line{font-family:var(--mono); font-size:13px; color:var(--accent); letter-spacing:.06em; min-height:18px}
+  .glitch{animation:glitch .25s steps(2) infinite}
+  @keyframes glitch{0%{transform:translate(0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-1px)}100%{transform:translate(0)}}
+
+  /* pantalla de llamada */
+  .call-head{font-family:var(--mono); font-size:11px; letter-spacing:.35em; color:var(--accent); text-transform:uppercase}
+  .caller{font-size:26px; font-weight:600; margin-top:4px}
+  .caller small{display:block; color:var(--muted); font-size:13px; letter-spacing:.2em; font-weight:400; margin-top:6px; text-transform:uppercase}
+  .call-actions{display:flex; gap:46px; margin-top:6px}
+  .round{
+    width:74px;height:74px;border-radius:50%;display:grid;place-items:center;cursor:pointer;
+    font-size:30px; border:none; color:#fff; transition:transform .15s;
+  }
+  .round:hover{transform:scale(1.06)}
+  .round.ans{background:linear-gradient(180deg,#48e6ab,#1f9e74); box-shadow:0 12px 30px -8px rgba(54,211,153,.8); animation:wiggle 1.6s ease-in-out infinite}
+  .round.dec{background:linear-gradient(180deg,#ff6b6b,#c23b3b); box-shadow:0 12px 30px -8px rgba(255,90,90,.7)}
+  .round .lab{position:absolute; margin-top:96px; font-size:12px; color:var(--muted); letter-spacing:.1em}
+  @keyframes wiggle{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(8deg)}}
+
+  /* subtítulos de la voz */
+  .subtitle{
+    min-height:60px; font-size:clamp(17px,4.4vw,22px); line-height:1.45; font-weight:500;
+    color:var(--ink); max-width:480px; text-shadow:0 0 18px rgba(255,42,54,.25);
+  }
+  .subtitle .cur{border-right:2px solid var(--accent); animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* reveal del código */
+  .code-box{
+    font-family:var(--mono); font-size:clamp(26px,8vw,44px); letter-spacing:.12em; font-weight:700;
+    color:var(--amber); padding:18px 26px; border-radius:14px;
+    border:1px dashed rgba(255,92,92,.5); background:rgba(255,92,92,.06);
+    text-shadow:0 0 24px rgba(255,92,92,.5);
+  }
+  .copy-hint{font-size:12px; color:var(--muted)}
+
+  /* tienda */
+  #store{justify-content:flex-start; overflow-y:auto; padding-top:54px; padding-bottom:60px}
+  #store .wrap{max-width:920px; gap:18px}
+  .store-banner{
+    width:100%; border:1px solid rgba(255,42,54,.3); background:rgba(255,42,54,.07);
+    border-radius:14px; padding:14px 18px; font-size:14px; color:var(--accent);
+    display:flex; gap:10px; align-items:center; justify-content:center; flex-wrap:wrap;
+  }
+  .store-banner b{color:var(--amber)}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; width:100%}
+  .card{
+    background:linear-gradient(180deg,#0c131b,#080d13);
+    border:1px solid rgba(255,255,255,.07); border-radius:var(--radius);
+    padding:20px; text-align:left; display:flex; flex-direction:column; gap:10px;
+    transition:transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .card:hover{transform:translateY(-4px); border-color:rgba(255,42,54,.4); box-shadow:0 20px 50px -25px rgba(255,42,54,.5)}
+  .card .ico{font-size:30px}
+  .card h3{font-size:17px; font-weight:600}
+  .card .desc{font-size:13px; color:var(--muted); line-height:1.5; flex:1}
+  .price{display:flex; align-items:baseline; gap:8px}
+  .price .now{font-size:20px; font-weight:700; color:var(--ink)}
+  .price .was{font-size:13px; color:var(--muted); text-decoration:line-through}
+  .price .off{font-size:11px; color:#04110f; background:var(--amber); padding:2px 7px; border-radius:99px; font-weight:700}
+  .add{
+    appearance:none; cursor:pointer; border:1px solid rgba(255,42,54,.4); background:transparent;
+    color:var(--accent); font-weight:600; padding:11px; border-radius:10px; font-size:14px; transition:.2s;
+  }
+  .add:hover{background:var(--accent); color:#04110f}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:#0c1620; border:1px solid rgba(255,42,54,.4); color:var(--ink);
+    padding:13px 20px; border-radius:12px; font-size:14px; z-index:80; opacity:0;
+    transition:.3s; box-shadow:0 20px 50px -20px rgba(0,0,0,.8); pointer-events:none;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* controles flotantes */
+  .float-tl{position:fixed; top:16px; left:18px; z-index:70; font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var(--muted); text-transform:uppercase}
+  .float-tr{position:fixed; top:14px; right:16px; z-index:70; display:flex; gap:8px}
+  .pill{
+    cursor:pointer; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.3);
+    color:var(--muted); font-size:12px; padding:7px 12px; border-radius:99px; backdrop-filter:blur(6px); transition:.2s;
+  }
+  .pill:hover{color:var(--ink); border-color:rgba(255,42,54,.5)}
+
+  .flicker{animation:flicker 3.5s infinite}
+  @keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.6}97%{opacity:1}}
+  .fade-up{animation:fadeUp .7s ease both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ---------- escena de sellado biométrico ---------- */
+  .scanner{position:relative; width:172px; height:172px; display:grid; place-items:center; cursor:pointer; user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent; touch-action:none}
+  .scanner svg{position:absolute; inset:0; width:100%; height:100%}
+  #ring{transition:stroke-dashoffset .05s linear; filter:drop-shadow(0 0 10px var(--accent))}
+  .scanner .finger{font-size:60px; color:var(--accent); text-shadow:0 0 26px rgba(255,42,54,.75); transition:transform .15s, color .2s}
+  .scanner.holding .finger{transform:scale(.86); animation:pulseRed .7s ease-in-out infinite}
+  @keyframes pulseRed{0%,100%{opacity:.65}50%{opacity:1}}
+  .scanner.done .finger{color:#fff; text-shadow:0 0 30px var(--accent)}
+  .countdown{font-family:var(--mono); font-size:13px; color:var(--muted); letter-spacing:.08em}
+  .countdown b{color:var(--accent)}
+  .big-cta{font-size:18px; padding:18px 38px; animation:ctaPulse 1.4s ease-in-out infinite}
+  @keyframes ctaPulse{0%,100%{box-shadow:0 0 0 1px rgba(255,42,54,.5),0 14px 40px -12px rgba(255,42,54,.85)}50%{box-shadow:0 0 0 1px rgba(255,42,54,.9),0 20px 64px -8px rgba(255,42,54,1)}}
+  #flash{position:fixed; inset:0; z-index:90; background:var(--accent); opacity:0; pointer-events:none}
+  #flash.go{animation:flashfx .6s ease-out}
+  @keyframes flashfx{0%{opacity:.92}100%{opacity:0}}
+  .shake{animation:shake .5s}
+  @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-2px)}60%{transform:translate(-4px,-2px)}80%{transform:translate(4px,2px)}}
+
+  /* ---------- panel de voz ---------- */
+  .vpanel{
+    position:fixed; top:52px; right:16px; z-index:75; width:240px; display:none;
+    background:rgba(12,4,5,.96); border:1px solid rgba(255,42,54,.35); border-radius:14px;
+    padding:14px; backdrop-filter:blur(8px); box-shadow:0 24px 60px -20px rgba(0,0,0,.8);
+    font-size:12px; color:var(--muted); text-align:left;
+  }
+  .vpanel label{display:block; margin:10px 0 4px; letter-spacing:.06em; text-transform:uppercase; font-size:10px; color:var(--accent)}
+  .vpanel label:first-child{margin-top:0}
+  .vpanel select,.vpanel input[type=range]{width:100%; box-sizing:border-box}
+  .vpanel select{background:#1a0608; color:var(--ink); border:1px solid rgba(255,42,54,.3); border-radius:8px; padding:7px; font-size:12px}
+  .vpanel input[type=range]{accent-color:var(--accent); margin-top:2px}
+  .vtest{
+    margin-top:12px; width:100%; cursor:pointer; border:none; border-radius:9px; padding:9px;
+    font-weight:600; color:#1a0203; background:linear-gradient(180deg,var(--accent),var(--accent-dim)); font-size:13px;
+  }
+  .vtest:hover{filter:brightness(1.08)}
+  .vpresets{display:flex; gap:6px}
+  .vchip{flex:1; cursor:pointer; border:1px solid rgba(255,42,54,.3); background:#1a0608; color:var(--muted); border-radius:8px; padding:7px 4px; font-size:11px}
+  .vchip.on,.vchip:hover{border-color:var(--accent); color:var(--ink)}
+  .vcheck{display:flex; align-items:center; gap:7px; text-transform:none; font-size:11px; color:var(--muted); letter-spacing:0; margin-top:8px}
+  .vcheck input{accent-color:var(--accent); width:auto}
+
+  /* vibración del avatar mientras suena la llamada */
+  #s-call.buzzing .glyph{animation:buzz .32s linear infinite}
+  @keyframes buzz{0%,100%{transform:translate(0,0)}20%{transform:translate(1.5px,-1px)}40%{transform:translate(-1.5px,1px)}60%{transform:translate(1px,1.5px)}80%{transform:translate(-1px,-1.5px)}}
+
+  /* input de nombre */
+  .name-input{width:280px; max-width:82vw; text-align:center; background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,42,54,.35); border-radius:12px; color:var(--ink); font-size:16px;
+    padding:13px 16px; font-family:var(--font); outline:none; transition:.2s}
+  .name-input:focus{border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,42,54,.18)}
+  .name-input::placeholder{color:var(--muted)}
+
+  /* barra de progreso del protocolo */
+  .protobar{position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:70; display:none;
+    align-items:center; gap:10px; font-family:var(--mono); font-size:11px; letter-spacing:.1em; color:var(--muted);
+    background:rgba(0,0,0,.32); padding:7px 14px; border-radius:99px; border:1px solid rgba(255,255,255,.08); backdrop-filter:blur(6px)}
+  .protobar.show{display:flex}
+  .pb-label{color:var(--accent); white-space:nowrap}
+  .pb-segs{display:flex; gap:5px}
+  .pb-dash{width:18px; height:3px; border-radius:2px; background:rgba(255,255,255,.15); transition:background .4s, box-shadow .4s}
+  .pb-dash.on{background:var(--accent); box-shadow:0 0 8px var(--accent)}
+
+  /* evaluación de riesgo */
+  .q-counter{font-family:var(--mono); font-size:12px; color:var(--muted); letter-spacing:.18em}
+  .q-options{display:flex; flex-direction:column; gap:12px; width:100%; max-width:430px}
+  .q-opt{cursor:pointer; border:1px solid rgba(255,42,54,.3); background:rgba(255,255,255,.03); color:var(--ink);
+    border-radius:12px; padding:16px 18px; font-size:16px; text-align:left; transition:.18s}
+  .q-opt:hover{border-color:var(--accent); background:rgba(255,42,54,.08); transform:translateY(-2px)}
+
+  /* recomendado en la tienda */
+  .card.rec{border-color:rgba(255,42,54,.55); box-shadow:0 0 0 1px rgba(255,42,54,.25), 0 18px 50px -28px rgba(255,42,54,.7)}
+  .rec-badge{display:inline-block; font-size:10px; font-weight:700; color:#1a0203; background:var(--accent);
+    padding:3px 9px; border-radius:99px; letter-spacing:.05em; align-self:flex-start}
+
+  /* arranque futurista de la entrada */
+  .boot-in{animation:bootIn 1.1s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes bootIn{
+    0%{opacity:0; letter-spacing:.4em; filter:blur(8px)}
+    60%{opacity:1; filter:blur(0)}
+    100%{opacity:1; letter-spacing:-.5px}
+  }
+  .boot-core{animation:bootCore 1.2s ease both}
+  @keyframes bootCore{0%{opacity:0; transform:scale(.4)}100%{opacity:1; transform:scale(1)}}
+  .boot-core .glyph{animation:spinGlyph 6s linear infinite}
+  @keyframes spinGlyph{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  /* análisis de riesgo */
+  .an-score{font-family:var(--mono); font-size:clamp(46px,14vw,78px); font-weight:700; line-height:1; text-shadow:0 0 28px rgba(255,42,54,.4)}
+  .gauge{position:relative; width:100%; max-width:460px; height:12px; border-radius:99px;
+    background:linear-gradient(90deg,#2bbf7a 0%, #e6c34d 50%, #ff3b3b 100%); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+  .gauge-mark{position:absolute; top:-7px; left:0; width:4px; height:26px; background:#fff; border-radius:2px;
+    box-shadow:0 0 12px #fff; transition:left 1.2s cubic-bezier(.2,.8,.2,1)}
+  .gauge-scale{display:flex; justify-content:space-between; width:100%; max-width:460px;
+    font-family:var(--mono); font-size:10px; color:var(--muted); letter-spacing:.1em; margin-top:-6px}
+  .an-priority{border:1px solid rgba(255,42,54,.4); background:rgba(255,42,54,.08); border-radius:12px;
+    padding:13px 18px; font-size:15px; color:var(--ink); max-width:460px}
+  .an-priority b{color:var(--accent)}
+
+  /* ---------- feed de seguridad ---------- */
+  #s-feed{padding:0}
+  .feed-frame{position:relative; width:100%; height:100%; max-width:none; background:#0a0203; overflow:hidden}
+  #feedCanvas{position:absolute; inset:0; width:100%; height:100%}
+  .feed-corner{position:absolute; width:26px; height:26px; border:2px solid rgba(255,42,54,.75); z-index:6}
+  .fc-tl{top:14px;left:14px;border-right:none;border-bottom:none}
+  .fc-tr{top:14px;right:14px;border-left:none;border-bottom:none}
+  .fc-bl{bottom:14px;left:14px;border-right:none;border-top:none}
+  .fc-br{bottom:14px;right:14px;border-left:none;border-top:none}
+  .scanbar{position:absolute; left:0; right:0; height:2px; top:0; z-index:5;
+    background:linear-gradient(90deg,transparent,rgba(255,42,54,.85),transparent);
+    box-shadow:0 0 16px rgba(255,42,54,.7); animation:scanmove 3.2s linear infinite}
+  @keyframes scanmove{0%{top:0}100%{top:100%}}
+  .feed-hud{position:absolute; inset:0; pointer-events:none; z-index:6;
+    font-family:var(--mono); color:var(--accent); font-size:12px; letter-spacing:.12em}
+  .feed-hud .hud-tl{position:absolute; top:20px; left:24px}
+  .feed-hud .hud-tr{position:absolute; top:20px; right:24px; display:flex; align-items:center; gap:6px}
+  .feed-hud .hud-bl{position:absolute; bottom:24px; left:24px; max-width:72%; line-height:1.7; color:#ff8a8a; text-shadow:0 0 8px rgba(255,42,54,.5)}
+  .feed-hud .hud-br{position:absolute; bottom:24px; right:24px; opacity:.55}
+  .feed-hud .rec{color:var(--accent); animation:blink 1s steps(1) infinite}
+  .reticle{position:absolute; left:50%; top:50%; z-index:6;
+    transform:translate(-50%,-50%) scale(1.7); opacity:0;
+    transition:transform 1.1s cubic-bezier(.2,.8,.2,1), opacity .5s; text-align:center}
+  .reticle.lock{opacity:1; transform:translate(-50%,-50%) scale(1)}
+  .rbox{width:clamp(110px,30vw,170px); height:clamp(110px,30vw,170px); border:2px solid var(--accent);
+    box-shadow:0 0 22px rgba(255,42,54,.6), inset 0 0 22px rgba(255,42,54,.22); position:relative; margin:0 auto}
+  .rbox::before{content:""; position:absolute; left:50%; top:50%; width:24px; height:24px; transform:translate(-50%,-50%);
+    background:linear-gradient(var(--accent),var(--accent)) center/2px 100% no-repeat,
+               linear-gradient(var(--accent),var(--accent)) center/100% 2px no-repeat}
+  .rlabel{margin-top:10px; font-family:var(--mono); font-size:12px; color:var(--accent); letter-spacing:.22em}
+  .feed-cta{position:absolute; inset:0; z-index:7; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:16px; text-align:center; padding:24px; opacity:0; visibility:hidden; transition:opacity .8s;
+    background:radial-gradient(circle at center, rgba(10,2,3,.5), rgba(10,2,3,.93))}
+  .feed-cta.show{opacity:1; visibility:visible}
+  .feed-cta h1{font-size:clamp(26px,7vw,46px)}
+</style>
+</head>
+<body>
+
+<canvas id="waves"></canvas>
+<div id="grain"></div>
+<div id="scanlines"></div>
+<div id="vignette"></div>
+<div id="flash"></div>
+
+<div class="float-tl flicker">EAP · FRECUENCIA SEGURA</div>
+<div class="protobar" id="protobar"><span class="pb-label" id="pbLabel">Protocolo</span><span class="pb-segs" id="pbSegs"></span></div>
+<div class="float-tr">
+  <div class="pill" id="voiceBtn">🎙 Voz</div>
+  <div class="pill" id="muteBtn">🔊 Sonido</div>
+  <div class="pill" id="skipBtn">Saltar intro ✕</div>
+</div>
+<div class="vpanel" id="voicePanel">
+  <label>Estilo</label>
+  <div class="vpresets">
+    <button class="vchip on" data-preset="jarvis">🦾 AEGIS</button>
+    <button class="vchip" data-preset="robot">🤖 Robot</button>
+    <button class="vchip" data-preset="myst">🕶️ Misteriosa</button>
+    <button class="vchip" data-preset="natural">🗣️ Natural</button>
+  </div>
+  <label>Voz</label>
+  <select id="voiceSel"></select>
+  <label class="vcheck"><input type="checkbox" id="allVoices" /> Mostrar todas las voces (para robóticas)</label>
+  <label>Tono (grave ←→ agudo)</label>
+  <input type="range" id="pitchSel" min="0" max="1.4" step="0.05" value="0.9" />
+  <label>Velocidad</label>
+  <input type="range" id="rateSel" min="0.5" max="1.2" step="0.05" value="0.97" />
+  <button class="vtest" id="voiceTest">▶ Probar voz</button>
+</div>
+
+<!-- ESCENA 1 · ENTRADA -->
+<section class="scene active" id="s-intro">
+  <div class="wrap">
+    <div class="core boot-core"><div class="glyph">⬡</div></div>
+    <div class="eyebrow flicker">AEGIS · Sistema de protección en línea</div>
+    <h1 class="boot-in"><span class="thin">Acabas de encontrar</span><br>El Arte de Proteger</h1>
+    <p class="lead">No fue casualidad. A partir de aquí, no caminas solo.<br>Para entrar a la red, primero tenemos que estar en la misma <span style="color:var(--accent)">frecuencia</span>.</p>
+    <input id="nameInput" class="name-input" type="text" maxlength="18" placeholder="¿Cómo te llamas?" autocomplete="off" />
+    <div class="stack">
+      <button class="btn" id="startBtn">⚡ Activar AEGIS</button>
+      <button class="btn ghost" id="toStore1">Prefiero ver los productos directo</button>
+    </div>
+    <p style="font-size:11px;color:var(--muted);max-width:330px">Experiencia inmersiva con sonido y voz. Puedes silenciarla o saltarla cuando quieras.</p>
+  </div>
+</section>
+
+<!-- ESCENA 2 · CONEXIÓN -->
+<section class="scene" id="s-connect">
+  <div class="wrap">
+    <div class="core"><div class="glyph" id="connGlyph">◈</div></div>
+    <div class="status-line" id="statusLine">Iniciando enlace…</div>
+    <div class="progress"><i id="bar"></i></div>
+    <p class="lead" style="font-size:14px">AEGIS en línea. Sincronizando un canal seguro, cifrado solo para ti.</p>
+  </div>
+</section>
+
+<!-- ESCENA 3 · LLAMADA ENTRANTE -->
+<section class="scene" id="s-call">
+  <div class="wrap">
+    <div class="call-head flicker">◉ Transmisión entrante</div>
+    <div class="core" style="margin:6px 0"><div class="glyph">⬡</div></div>
+    <div class="caller">AEGIS
+      <small>Asistente de protección · canal cifrado</small>
+    </div>
+    <div class="call-actions">
+      <button class="round dec" id="declineBtn" title="Rechazar">✕<span class="lab">Ahora no</span></button>
+      <button class="round ans" id="answerBtn" title="Contestar">✆<span class="lab">Contestar</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ESCENA 4 · MENSAJE / VOZ -->
+<section class="scene" id="s-message">
+  <div class="wrap">
+    <div class="eyebrow" id="msgTag">● En línea</div>
+    <div class="core" style="transform:scale(.85)"><div class="glyph" id="msgGlyph">⬡</div></div>
+    <div class="subtitle" id="subtitle"></div>
+  </div>
+</section>
+
+<!-- ESCENA 5 · CÓDIGO -->
+<section class="scene" id="s-code">
+  <div class="wrap">
+    <div class="eyebrow">Tu llave de iniciación</div>
+    <h1 style="font-size:clamp(22px,5vw,30px)" class="thin">Estás dentro.</h1>
+    <div class="code-box fade-up" id="codeBox">ESCUDO-0000</div>
+    <p class="copy-hint">Tóca el código para copiarlo. Lo necesitarás en la tienda.</p>
+    <div class="stack">
+      <button class="btn" id="toStore2">Continuar — calibrar mi protección →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ESCENA 5.3 · EVALUACIÓN DE RIESGO -->
+<section class="scene" id="s-eval">
+  <div class="wrap">
+    <div class="eyebrow flicker">Evaluando tu nivel de riesgo</div>
+    <div class="q-counter" id="qCounter">Pregunta 1 de 7</div>
+    <h1 class="thin" id="qText" style="font-size:clamp(22px,5.4vw,32px)">…</h1>
+    <div class="q-options" id="qOptions"></div>
+  </div>
+</section>
+
+<!-- ESCENA 5.4 · ANÁLISIS DE RIESGO -->
+<section class="scene" id="s-analysis">
+  <div class="wrap">
+    <div class="eyebrow flicker">Análisis completado · AEGIS</div>
+    <div class="an-score" id="anScore">0</div>
+    <h1 class="thin" id="anLevel" style="font-size:clamp(22px,5.4vw,32px)">Nivel de riesgo</h1>
+    <div class="gauge"><div class="gauge-mark" id="anMark"></div></div>
+    <div class="gauge-scale"><span>Bajo</span><span>Moderado</span><span>Alto</span></div>
+    <p class="lead" id="anBody" style="max-width:460px">…</p>
+    <div class="an-priority" id="anPriority"></div>
+    <div class="stack"><button class="btn" id="anContinue">Activar mi protección →</button></div>
+  </div>
+</section>
+
+<!-- ESCENA 5.5 · SELLAR ACCESO -->
+<section class="scene" id="s-seal">
+  <div class="wrap">
+    <div class="eyebrow flicker" id="sealTag">Último paso · activa tu escudo</div>
+    <h1 class="thin" style="font-size:clamp(22px,5.4vw,34px)">Activa tu protección</h1>
+    <div class="scanner" id="scanner">
+      <svg viewBox="0 0 172 172" aria-hidden="true">
+        <circle cx="86" cy="86" r="78" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="6"/>
+        <circle id="ring" cx="86" cy="86" r="78" fill="none" stroke="var(--accent)" stroke-width="6"
+          stroke-linecap="round" stroke-dasharray="490.1" stroke-dashoffset="490.1"
+          transform="rotate(-90 86 86)"/>
+      </svg>
+      <div class="finger" id="finger">⏻</div>
+    </div>
+    <p class="lead" id="sealHint" style="font-size:15px">Toca el núcleo para activar AEGIS</p>
+    <div class="countdown">Tu llave queda activa por <b id="cdTime">10:00</b></div>
+    <div class="stack" id="sealCta" style="display:none">
+      <button class="btn big-cta" id="toStoreFinal">⚡ Reclama tu arsenal →</button>
+      <p class="copy-hint">Tu acceso de iniciado está activo… por ahora.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ESCENA 5.7 · FEED DE SEGURIDAD -->
+<section class="scene" id="s-feed">
+  <div class="feed-frame">
+    <canvas id="feedCanvas"></canvas>
+    <div class="feed-corner fc-tl"></div><div class="feed-corner fc-tr"></div>
+    <div class="feed-corner fc-bl"></div><div class="feed-corner fc-br"></div>
+    <div class="scanbar"></div>
+    <div class="reticle" id="reticle"><div class="rbox"></div><div class="rlabel" id="rlabel"></div></div>
+    <div class="feed-hud">
+      <div class="hud-tl">CAM 01 · EAP-SECURE</div>
+      <div class="hud-tr"><span class="rec">●</span> REC <span id="feedTime">00:00:00</span></div>
+      <div class="hud-bl" id="feedLog"></div>
+      <div class="hud-br">FRECUENCIA SEGURA</div>
+    </div>
+    <div class="feed-cta" id="feedCta">
+      <div class="eyebrow">Vigilancia activa</div>
+      <h1>Estás bajo protección</h1>
+      <button class="btn big-cta" id="feedToStore">⚡ Reclama tu arsenal →</button>
+      <div class="countdown">Oferta de iniciado · expira en <b id="cdFeed">10:00</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ESCENA 6 · PUENTE A LA VENTA -->
+<section class="scene" id="store">
+  <div class="wrap">
+    <div class="eyebrow">El Arte de Proteger · Acceso de iniciado</div>
+    <h1 id="storeTitle" style="font-size:clamp(24px,6vw,38px)">Tu protección empieza hoy</h1>
+    <div class="store-banner">🔓 Código <b id="codeShown">ESCUDO-0000</b> aplicado · acceso de iniciado · expira en <b id="cdShown">10:00</b></div>
+    <div class="grid" id="grid"></div>
+    <a class="btn" id="goShop" rel="noopener" href="manual.html#cobro" style="text-decoration:none">🛡️ Ver El Arte de Proteger →</a>
+    <button class="btn ghost" id="restartBtn">↺ Repetir la experiencia desde el inicio</button>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ===== DESTINO DE COMPRA =====
+     Todos los botones de compra de la experiencia AEGIS llevan a la página de
+     venta del manual (sección de precios "Elige Tu Acceso"). */
+  var STORE_URL='manual.html#cobro';
+  function storeReady(){ return true; }
+  function goShopUrl(){ window.location.href=STORE_URL; }
+
+  /* ===================== AUDIO ===================== */
+  var actx=null, master=null, muted=false, ambient=null;
+  function audio(){
+    if(actx) return actx;
+    try{
+      actx=new (window.AudioContext||window.webkitAudioContext)();
+      master=actx.createGain(); master.gain.value=muted?0:0.9; master.connect(actx.destination);
+    }catch(e){ actx=null; }
+    return actx;
+  }
+  function tone(freq,start,dur,type,vol){
+    if(!audio()) return;
+    var o=actx.createOscillator(), g=actx.createGain();
+    o.type=type||'sine'; o.frequency.value=freq;
+    var t=actx.currentTime+start;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime((vol||0.2),t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.05);
+  }
+  function noise(start,dur,vol){
+    if(!audio()) return;
+    var n=actx.sampleRate*dur, buf=actx.createBuffer(1,n,actx.sampleRate), d=buf.getChannelData(0);
+    for(var i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2);
+    var s=actx.createBufferSource(); s.buffer=buf;
+    var g=actx.createGain(); g.gain.value=vol||0.15;
+    var f=actx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1400;
+    s.connect(f); f.connect(g); g.connect(master); s.start(actx.currentTime+start);
+  }
+  function startAmbient(){
+    if(!audio()||ambient) return;
+    var g=actx.createGain(); g.gain.value=0.05; g.connect(master);
+    var o1=actx.createOscillator(); o1.type='sine'; o1.frequency.value=55;
+    var o2=actx.createOscillator(); o2.type='sine'; o2.frequency.value=55.5; // batido sutil
+    var o3=actx.createOscillator(); o3.type='triangle'; o3.frequency.value=110;
+    var g3=actx.createGain(); g3.gain.value=0.012; o3.connect(g3); g3.connect(master);
+    o1.connect(g); o2.connect(g);
+    // swell lento que respira
+    var lfo=actx.createOscillator(); lfo.type='sine'; lfo.frequency.value=0.07;
+    var lfoG=actx.createGain(); lfoG.gain.value=0.03; lfo.connect(lfoG); lfoG.connect(g.gain);
+    o1.start(); o2.start(); o3.start(); lfo.start();
+    ambient={o1:o1,o2:o2,o3:o3,lfo:lfo,g:g};
+  }
+  function sfxConnect(){ tone(180,0,0.5,'sawtooth',0.12); tone(360,0.15,0.6,'sine',0.1); tone(720,0.4,0.7,'sine',0.08); noise(0,0.5,0.08); }
+  function sfxGlitch(){ noise(0,0.18,0.18); tone(90,0,0.12,'square',0.12); }
+  function sfxBeep(){ tone(880,0,0.09,'sine',0.18); tone(660,0.12,0.12,'sine',0.15); }
+  /* nota tipo "marimba" (mazo): ataque corto + caída rápida */
+  function mallet(freq,start,vol){
+    if(!audio()) return;
+    var t=actx.currentTime+start;
+    var o=actx.createOscillator(), g=actx.createGain();
+    o.type='triangle'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol||0.16,t+0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.5);
+    var o2=actx.createOscillator(), g2=actx.createGain();
+    o2.type='sine'; o2.frequency.value=freq*4;
+    g2.gain.setValueAtTime(0,t); g2.gain.linearRampToValueAtTime((vol||0.16)*0.25,t+0.008);
+    g2.gain.exponentialRampToValueAtTime(0.0001,t+0.2);
+    o.connect(g); g.connect(master); o2.connect(g2); g2.connect(master);
+    o.start(t); o.stop(t+0.55); o2.start(t); o2.stop(t+0.25);
+  }
+  function vibrate(p){ if(navigator.vibrate){ try{ navigator.vibrate(p); }catch(e){} } }
+  var ringTimer=null;
+  /* melodía original inspirada en el tono marimba del iPhone (no es la oficial) */
+  var NOTE={E5:659.25,B4:493.88,Gs4:415.30,A4:440.00,Cs5:554.37};
+  function ringMelody(){
+    var seq=[[NOTE.E5,0],[NOTE.B4,0.17],[NOTE.Gs4,0.34],[NOTE.A4,0.51],
+             [NOTE.B4,0.68],[NOTE.E5,0.9],[NOTE.B4,1.07],[NOTE.Cs5,1.24]];
+    for(var i=0;i<seq.length;i++) mallet(seq[i][0],seq[i][1],0.16);
+    vibrate([500,140,500,1260]);
+    var call=document.getElementById('s-call'); if(call) call.classList.add('buzzing');
+  }
+  function startRing(){ stopRing(); ringMelody(); ringTimer=setInterval(ringMelody,2400); }
+  function stopRing(){
+    if(ringTimer){ clearInterval(ringTimer); ringTimer=null; }
+    vibrate(0);
+    var call=document.getElementById('s-call'); if(call) call.classList.remove('buzzing');
+  }
+
+  /* sonido de carga del sensor (sube de tono mientras sostienes) */
+  var chargeOsc=null, chargeGain=null;
+  function startCharge(){
+    if(!audio()||chargeOsc) return;
+    chargeOsc=actx.createOscillator(); chargeGain=actx.createGain();
+    chargeOsc.type='sawtooth';
+    chargeOsc.frequency.setValueAtTime(110,actx.currentTime);
+    chargeGain.gain.setValueAtTime(0.0001,actx.currentTime);
+    chargeGain.gain.linearRampToValueAtTime(0.10,actx.currentTime+0.08);
+    chargeOsc.connect(chargeGain); chargeGain.connect(master); chargeOsc.start();
+  }
+  function rampCharge(p){ if(chargeOsc){ try{ chargeOsc.frequency.setTargetAtTime(110+p*9.5,actx.currentTime,0.05); }catch(e){} } }
+  function stopCharge(){
+    if(chargeOsc){ try{ chargeGain.gain.linearRampToValueAtTime(0.0001,actx.currentTime+0.12); chargeOsc.stop(actx.currentTime+0.16); }catch(e){} chargeOsc=null; chargeGain=null; }
+  }
+  function sfxBoom(){ tone(64,0,1.3,'sine',0.32); tone(128,0,1.0,'sawtooth',0.12); tone(330,0.04,0.5,'sine',0.12); noise(0,0.55,0.22); }
+  function flashScreen(){ var f=document.getElementById('flash'); if(!f) return; f.classList.remove('go'); void f.offsetWidth; f.classList.add('go'); }
+
+  /* ===================== VOZ ===================== */
+  var selectedVoice=null, voicePitch=0.9, voiceRate=0.97, showAllVoices=false;
+  function spanishVoices(){
+    if(!('speechSynthesis' in window)) return [];
+    return window.speechSynthesis.getVoices().filter(function(v){
+      return /^es(-|_|$)/i.test(v.lang) || /espa(ñ|n)ol|spanish/i.test(v.name);
+    });
+  }
+  function allVoicesList(){ return ('speechSynthesis' in window) ? window.speechSynthesis.getVoices() : []; }
+  function currentVoiceList(){ return showAllVoices ? allVoicesList() : spanishVoices(); }
+  /* Voces femeninas en español más comunes por plataforma (macOS, iOS, Windows, Chrome/Google, Android) */
+  var FEMALE_VOICE=/paulina|m[óo]nica|marisol|ang[ée]lica|soledad|esperanza|sabina|helena|laura|elena|lucia|luc[íi]a|google espa|female|mujer|femenin/i;
+  var MALE_VOICE=/jorge|diego|pablo|ra[úu]l|carlos|juan|enrique|miguel|male|hombre|masculin/i;
+  function defaultVoice(){
+    var vs=spanishVoices();
+    if(!vs.length) return null;
+    var latam=/es(-|_)(419|US|MX|CO|AR|CL|PE)/i;
+    // 1) voz femenina latinoamericana
+    var f=vs.find(function(v){ return FEMALE_VOICE.test(v.name) && latam.test(v.lang); });
+    if(f) return f;
+    // 2) cualquier voz femenina en español
+    f=vs.find(function(v){ return FEMALE_VOICE.test(v.name); });
+    if(f) return f;
+    // 3) por región, evitando voces masculinas conocidas
+    var order=[/es(-|_)419/i,/es(-|_)US/i,/es(-|_)MX/i,/es(-|_)CO/i,/es(-|_)AR/i,/es(-|_)CL/i,/es(-|_)PE/i,/es(-|_)/i];
+    for(var i=0;i<order.length;i++){
+      var rx=order[i];
+      var pick=vs.find(function(v){ return rx.test(v.lang) && !MALE_VOICE.test(v.name); });
+      if(pick) return pick;
+    }
+    return vs[0]||null;
+  }
+  function speak(text,onend){
+    try{
+      if(!('speechSynthesis' in window)){ if(onend) setTimeout(onend,text.length*55); return; }
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text);
+      var v=selectedVoice||defaultVoice();
+      if(v){ u.voice=v; u.lang=v.lang; } else { u.lang='es-419'; }
+      u.rate=voiceRate; u.pitch=voicePitch; u.volume=muted?0:1;
+      if(onend) u.onend=onend;
+      window.speechSynthesis.speak(u);
+    }catch(e){ if(onend) setTimeout(onend,text.length*55); }
+  }
+  function populateVoices(){
+    var sel=document.getElementById('voiceSel'); if(!sel) return;
+    var vs=currentVoiceList();
+    sel.innerHTML='';
+    if(!vs.length){ var o=document.createElement('option'); o.textContent='(sin voces disponibles en este equipo)'; sel.appendChild(o); return; }
+    if(!selectedVoice) selectedVoice=defaultVoice();
+    vs.forEach(function(v){
+      var o=document.createElement('option'); o.value=v.name; o.textContent=v.name+' · '+v.lang;
+      if(selectedVoice && v.name===selectedVoice.name) o.selected=true;
+      sel.appendChild(o);
+    });
+  }
+  if('speechSynthesis' in window){ window.speechSynthesis.onvoiceschanged=populateVoices; setTimeout(populateVoices,300); }
+
+  /* ===================== LOCUCIÓN PREGRABADA (con respaldo a TTS) ===================== */
+  /* Coloca tus MP3 en una carpeta "voces/" junto a este archivo. Si falta alguno,
+     se usa automáticamente la voz del navegador. Ver el guion entregado aparte. */
+  var VO_BASE='voces/';
+  var VO={
+    msg1:'aegis_01_sistemas.mp3',
+    msg2:'aegis_02_bienvenida.mp3',
+    msg3:'aegis_03_llave.mp3',
+    msg4:'aegis_04_pantalla.mp3',
+    msg5:'aegis_05_no_estas_solo.mp3',
+    feed_protected:'aegis_06_protegido.mp3',
+    an_bajo:'aegis_07_riesgo_bajo.mp3',
+    an_moderado:'aegis_08_riesgo_moderado.mp3',
+    an_alto:'aegis_09_riesgo_alto.mp3',
+    an_curso:'aegis_10_curso.mp3',
+    an_plan:'aegis_11_plan.mp3'
+  };
+  var currentVO=null;
+  function stopVO(){ if(currentVO){ try{ currentVO.pause(); currentVO.currentTime=0; }catch(e){} currentVO=null; } }
+  /* TTS con respaldo de tiempo, por si onend no dispara */
+  function speakSafe(text, onend){
+    var done=false; function fin(){ if(done) return; done=true; if(onend) onend(); }
+    speak(text, fin);
+    setTimeout(fin, estimateMs(text));
+  }
+  /* Reproduce el MP3 de la línea; si no existe o falla, usa la voz del navegador */
+  function voLine(id, fallbackText, onend){
+    var file=VO[id];
+    if(!file || typeof Audio==='undefined'){ return speakSafe(fallbackText, onend); }
+    var done=false, ultimate=null, a=null;
+    function fin(){ if(done) return; done=true; if(ultimate) clearTimeout(ultimate); if(onend) onend(); }
+    function fallback(){ if(done) return; done=true; if(ultimate) clearTimeout(ultimate); if(a){ try{ a.pause(); }catch(e){} } speakSafe(fallbackText, onend); }
+    try{
+      a=new Audio(VO_BASE+file); a.volume=muted?0:1; currentVO=a;
+      a.addEventListener('ended', fin);
+      a.addEventListener('error', fallback);
+      a.addEventListener('loadedmetadata', function(){
+        if(isFinite(a.duration) && a.duration>0){ if(ultimate) clearTimeout(ultimate); ultimate=setTimeout(fin, a.duration*1000+2000); }
+      });
+      ultimate=setTimeout(fallback, 6000); // si en 6s no cargó, usa TTS
+      var pr=a.play();
+      if(pr && pr.catch){ pr.catch(fallback); }
+    }catch(e){ fallback(); }
+  }
+
+  /* ===================== ESCENAS ===================== */
+  function $(s){return document.querySelector(s);}
+  var scenes={intro:'#s-intro',connect:'#s-connect',call:'#s-call',message:'#s-message',code:'#s-code',eval:'#s-eval',analysis:'#s-analysis',seal:'#s-seal',feed:'#s-feed',store:'#store'};
+  var current='intro';
+  function go(name){
+    if(current==='call') stopRing();
+    if(current==='feed' && name!=='feed') stopFeed();
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    stopVO();
+    var cur=$(scenes[current]); if(cur) cur.classList.remove('active');
+    current=name;
+    var nx=$(scenes[name]); if(nx) nx.classList.add('active');
+    updateProgress(name);
+    if(name==='store') buildStore();
+  }
+
+  /* ===================== BARRA DE PROGRESO ===================== */
+  var STEPS=['Conexión','Clave','Calibración','Sello','Acceso'];
+  var sceneStep={connect:1,call:1,message:1,code:2,eval:3,analysis:3,seal:4,feed:5,store:5};
+  function buildProgress(){ var c=document.getElementById('pbSegs'); if(!c) return; for(var i=0;i<5;i++){ var s=document.createElement('span'); s.className='pb-dash'; c.appendChild(s); } }
+  buildProgress();
+  function updateProgress(scene){
+    var pb=document.getElementById('protobar'); if(!pb) return;
+    var step=sceneStep[scene]||0;
+    if(!step){ pb.classList.remove('show'); return; }
+    pb.classList.add('show');
+    document.getElementById('pbLabel').textContent='Paso '+step+'/5 · '+STEPS[step-1];
+    var dashes=document.querySelectorAll('#pbSegs .pb-dash');
+    Array.prototype.forEach.call(dashes,function(d,i){ if(i<step) d.classList.add('on'); else d.classList.remove('on'); });
+  }
+
+  /* ===================== MUTE / SKIP ===================== */
+  var muteBtn=$('#muteBtn');
+  muteBtn.addEventListener('click',function(){
+    muted=!muted;
+    if(master) master.gain.value=muted?0:0.9;
+    if(currentVO) currentVO.volume=muted?0:1;
+    if(muted && window.speechSynthesis) window.speechSynthesis.cancel();
+    muteBtn.textContent=muted?'🔇 Silencio':'🔊 Sonido';
+  });
+
+  /* panel de voz */
+  var voicePanel=document.getElementById('voicePanel');
+  document.getElementById('voiceBtn').addEventListener('click',function(){
+    populateVoices();
+    voicePanel.style.display = (voicePanel.style.display==='block') ? 'none' : 'block';
+  });
+  document.getElementById('voiceSel').addEventListener('change',function(e){
+    var vs=currentVoiceList();
+    selectedVoice = vs.find(function(v){ return v.name===e.target.value; }) || selectedVoice;
+  });
+  document.getElementById('pitchSel').addEventListener('input',function(e){ voicePitch=parseFloat(e.target.value); });
+  document.getElementById('rateSel').addEventListener('input',function(e){ voiceRate=parseFloat(e.target.value); });
+  function ensureSound(){ if(muted){ muted=false; if(master) master.gain.value=0.9; muteBtn.textContent='🔊 Sonido'; } audio(); }
+  document.getElementById('voiceTest').addEventListener('click',function(){
+    ensureSound();
+    speak('Bienvenido a El Arte de Proteger. Desde hoy, ya no caminas solo.');
+  });
+  document.getElementById('allVoices').addEventListener('change',function(e){
+    showAllVoices=e.target.checked; selectedVoice=null; populateVoices();
+  });
+  function applyPreset(p){
+    if(p==='jarvis'){ voicePitch=0.9; voiceRate=0.97; }       /* AEGIS: claro y sereno */
+    else if(p==='robot'){ voicePitch=0.2; voiceRate=0.8; }
+    else if(p==='natural'){ voicePitch=1.0; voiceRate=1.0; }
+    else { voicePitch=0.5; voiceRate=0.85; }                  /* misteriosa */
+    var ps=document.getElementById('pitchSel'), rs=document.getElementById('rateSel');
+    if(ps) ps.value=voicePitch; if(rs) rs.value=voiceRate;
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('.vchip'),function(c){
+    c.addEventListener('click',function(){
+      Array.prototype.forEach.call(document.querySelectorAll('.vchip'),function(x){ x.classList.remove('on'); });
+      c.classList.add('on');
+      applyPreset(c.getAttribute('data-preset'));
+      ensureSound();
+      speak('Sistema de protección activado. Estás en la frecuencia.');
+    });
+  });
+  /* "Saltar intro" / "ver productos directo": salir de la experiencia y llevar
+     directo a la página de venta del manual. */
+  function skipToStore(){
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    stopRing();
+    window.location.href='manual.html#cobro';
+  }
+  $('#skipBtn').addEventListener('click',skipToStore);
+
+  /* ===================== FLUJO ===================== */
+  $('#toStore1').addEventListener('click',skipToStore);
+
+  $('#startBtn').addEventListener('click',function(){
+    var ni=document.getElementById('nameInput');
+    userName = ni ? (ni.value||'').trim().replace(/[<>]/g,'').slice(0,18) : '';
+    audio(); startAmbient(); sfxConnect();
+    if(window.speechSynthesis){ window.speechSynthesis.getVoices(); }
+    go('connect'); runConnect();
+  });
+
+  var connSteps=[
+    'Inicializando núcleo AEGIS…',
+    'Calibrando sensores biométricos…',
+    'Rastreando tu frecuencia…',
+    'Enlace seguro establecido ✓'
+  ];
+  function runConnect(){
+    var bar=$('#bar'), line=$('#statusLine'), g=$('#connGlyph'), i=0, p=0;
+    line.textContent=connSteps[0];
+    var glyphs=['◈','◇','▣','⬡'];
+    var iv=setInterval(function(){
+      p+=Math.random()*9+4; if(p>100)p=100;
+      bar.style.width=p+'%';
+      g.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+      var idx=Math.min(connSteps.length-1, Math.floor(p/26));
+      if(idx!==i){ i=idx; line.textContent=connSteps[i]; sfxGlitch(); line.classList.add('glitch'); setTimeout(function(){line.classList.remove('glitch')},250); }
+      if(p>=100){ clearInterval(iv); setTimeout(function(){ go('call'); startRing(); },650); }
+    },220);
+  }
+
+  $('#answerBtn').addEventListener('click',function(){ stopRing(); sfxBeep(); go('message'); runMessage(); });
+  $('#declineBtn').addEventListener('click',function(){ stopRing(); revealCode(true); });
+
+  var memberCode='ESCUDO-'+Math.floor(1000+Math.random()*9000);
+  var userName='';
+  var MSG_IDS=['msg1','msg2','msg3','msg4','msg5'];
+  function buildLines(){
+    var n=userName?(', '+userName):'';
+    return [
+      'Sistemas en línea. Soy AEGIS, tu asistente de protección.',
+      'Es un gusto conocerte'+n+'. A partir de ahora, cuidar de ti es mi prioridad.',
+      'He generado una llave de acceso única, solo para ti.',
+      'La verás en pantalla en un momento. Apréndela de memoria.',
+      'Guárdala bien. Mientras yo esté en línea, no estás solo.'
+    ];
+  }
+  function typeLine(text,done){
+    var el=$('#subtitle'); el.innerHTML='';
+    var i=0; var span=document.createElement('span'); el.appendChild(span);
+    var cur=document.createElement('span'); cur.className='cur'; el.appendChild(cur);
+    var iv=setInterval(function(){
+      span.textContent=text.slice(0,i);
+      i++;
+      if(i>text.length){ clearInterval(iv); cur.remove(); if(done) done(); }
+    }, 34);
+  }
+  // respaldo generoso: estima cuánto tarda en leerse para NO cortar la voz
+  function estimateMs(t){ return Math.round(t.length * 90 / Math.max(voiceRate,0.5)) + 1000; }
+  function runMessage(){
+    $('#msgGlyph').classList.add('flicker');
+    var lines=buildLines();
+    var idx=0;
+    function next(){
+      if(idx>=lines.length){ setTimeout(function(){ revealCode(false); }, 900); return; }
+      var t=lines[idx];
+      $('#msgTag').textContent = idx>=3 ? '● Transmitiendo llave' : '● En línea';
+      typeLine(t);
+      sfxGlitch();
+      // Avanza SOLO cuando la voz termina (onend); el respaldo es largo a propósito
+      // para que nunca corte la frase a la mitad.
+      var advanced=false;
+      function advance(){ if(advanced) return; advanced=true; setTimeout(function(){ idx++; next(); }, 600); }
+      voLine(MSG_IDS[idx], t, advance);
+    }
+    next();
+  }
+
+  var codeRevealed=false;
+  function revealCode(skip){
+    if(codeRevealed){ go('store'); return; }
+    codeRevealed=true;
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    stopRing();
+    $('#codeBox').textContent=memberCode;
+    $('#codeShown').textContent=memberCode;
+    go('code');
+    if(!skip){ sfxBeep(); }
+  }
+
+  $('#codeBox').addEventListener('click',function(){
+    var ok=false;
+    try{ navigator.clipboard.writeText(memberCode); ok=true; }catch(e){}
+    showToast(ok?('Copiado: '+memberCode):memberCode);
+  });
+  $('#toStore2').addEventListener('click',function(){ resetEval(); startEval(); startCountdown(); go('eval'); });
+
+  /* ===================== EVALUACIÓN DE RIESGO ===================== */
+  var quiz=[
+    {q:'¿Con qué frecuencia te mueves solo o sola, de noche?', a:[
+      {t:'Casi nunca', tags:[], risk:0},
+      {t:'Algunas veces por semana', tags:['alarma'], risk:10},
+      {t:'Muy seguido', tags:['alarma','kit'], risk:20}
+    ]},
+    {q:'¿Cómo te trasladas normalmente?', a:[
+      {t:'En auto propio', tags:[], risk:5},
+      {t:'Transporte público o apps', tags:['viaje','localizador'], risk:15},
+      {t:'Caminando buena parte del trayecto', tags:['alarma','kit'], risk:15}
+    ]},
+    {q:'¿Alguna vez te has sentido en peligro o seguido/a?', a:[
+      {t:'Nunca', tags:[], risk:0},
+      {t:'Una vez', tags:['kit'], risk:12},
+      {t:'Más de una vez', tags:['curso','alarma'], risk:25}
+    ]},
+    {q:'¿Qué llevas hoy contigo para protegerte?', a:[
+      {t:'Nada, la verdad', tags:['kit','curso'], risk:20},
+      {t:'Algo básico (gas, silbato…)', tags:['kit'], risk:8},
+      {t:'Voy preparado/a', tags:['membresia'], risk:0}
+    ]},
+    {q:'Si te agarraran por sorpresa, ¿sabrías reaccionar?', a:[
+      {t:'No sabría qué hacer', tags:['curso'], risk:24},
+      {t:'Más o menos', tags:['curso'], risk:12},
+      {t:'Sí, con confianza', tags:['membresia'], risk:2}
+    ]},
+    {q:'¿Para quién es esta protección?', a:[
+      {t:'Para mí', tags:['curso','kit'], risk:0},
+      {t:'Para mi familia', tags:['membresia','localizador'], risk:5},
+      {t:'Para alguien que quiero', tags:['localizador','membresia'], risk:5}
+    ]},
+    {q:'En tu día a día, ¿qué tan seguro/a te sientes?', a:[
+      {t:'Muy seguro/a', tags:[], risk:0},
+      {t:'Normal', tags:['kit'], risk:10},
+      {t:'Inseguro/a a menudo', tags:['curso','membresia'], risk:22}
+    ]}
+  ];
+  var scores={}, riskScore=0;
+  function maxRisk(){ var m=0; quiz.forEach(function(Q){ var mx=0; Q.a.forEach(function(o){ if((o.risk||0)>mx) mx=o.risk; }); m+=mx; }); return m; }
+  function resetEval(){ scores={}; riskScore=0; }
+  function renderQuestion(i){
+    var Q=quiz[i];
+    document.getElementById('qCounter').textContent='Pregunta '+(i+1)+' de '+quiz.length;
+    document.getElementById('qText').textContent=Q.q;
+    var box=document.getElementById('qOptions'); box.innerHTML='';
+    Q.a.forEach(function(opt){
+      var b=document.createElement('button'); b.className='q-opt'; b.textContent=opt.t;
+      b.addEventListener('click',function(){
+        opt.tags.forEach(function(tg){ scores[tg]=(scores[tg]||0)+1; });
+        riskScore+=(opt.risk||0);
+        sfxBeep();
+        if(i+1<quiz.length){ renderQuestion(i+1); }
+        else { go('analysis'); renderAnalysis(); }
+      });
+      box.appendChild(b);
+    });
+  }
+  function startEval(){ renderQuestion(0); }
+
+  /* ===================== ANÁLISIS DE RIESGO ===================== */
+  function topProduct(){
+    var best=null, bestS=-1;
+    products.forEach(function(p){ var s=scores[p.tag]||0; if(s>bestS){ bestS=s; best=p; } });
+    return best;
+  }
+  function renderAnalysis(){
+    var pct=Math.min(100, Math.round(riskScore/Math.max(1,maxRisk())*100));
+    var level, color;
+    if(pct<40){ level='BAJO'; color='#2bbf7a'; }
+    else if(pct<70){ level='MODERADO'; color='#e6c34d'; }
+    else { level='ALTO'; color='#ff3b3b'; }
+    var lv=document.getElementById('anLevel'); lv.textContent='Nivel de riesgo: '+level; lv.style.color=color;
+    document.getElementById('anMark').style.left='0%';
+    setTimeout(function(){ document.getElementById('anMark').style.left=pct+'%'; },150);
+    var sc=document.getElementById('anScore'); sc.style.color=color; var n=0;
+    var iv=setInterval(function(){ n+=Math.max(1,Math.ceil(pct/24)); if(n>=pct){ n=pct; clearInterval(iv); } sc.textContent=n; },40);
+    var lowSkill=(scores['curso']||0)>=2;
+    var body;
+    if(pct<40){ body='Tu perfil es relativamente seguro, pero el riesgo nunca es cero. Reforzando un par de hábitos quedas muy bien cubierto/a.'; }
+    else if(pct<70){ body='Hay varios momentos de tu rutina donde estás expuesto/a. No es para alarmarte, pero sí para tomar acción hoy y no después.'; }
+    else { body='Tu rutina te expone más de lo que crees, y hoy no cuentas con herramientas para reaccionar. Conviene actuar cuanto antes.'; }
+    if(lowSkill){ body+=' Tu punto débil principal es la reacción: traer algo no sirve si no sabes usarlo. Por eso lo más importante para ti es entrenar.'; }
+    document.getElementById('anBody').textContent=body;
+    var pr=document.getElementById('anPriority');
+    if(pr){ pr.innerHTML='🎯 Tu prioridad #1: <b>El Arte de Proteger</b> — el método para anticipar el peligro y reaccionar con confianza.'; }
+    var lvlId = (pct<40)?'an_bajo':((pct<70)?'an_moderado':'an_alto');
+    var base='He analizado tu perfil'+(userName?(', '+userName):'')+'. Tu nivel de riesgo es '+level.toLowerCase()+'.';
+    voLine(lvlId, base, function(){
+      if(lowSkill){ voLine('an_curso','Lo más importante para ti es aprender a defenderte; te recomiendo empezar por el curso.'); }
+      else { voLine('an_plan','Tengo un plan de protección listo para ti.'); }
+    });
+  }
+  document.getElementById('anContinue').addEventListener('click',function(){ go('seal'); });
+
+  /* ===================== ACTIVAR ESCUDO (un toque) ===================== */
+  var ring=$('#ring'), scanner=$('#scanner'), finger=$('#finger'), sealHint=$('#sealHint');
+  var CIRC=490.1, prog=0, activating=false, sealed=false, actRaf=null;
+  function setRing(p){ ring.setAttribute('stroke-dashoffset',(CIRC*(1-p/100)).toFixed(1)); }
+  function activateLoop(){
+    if(!activating) return;
+    prog+=1.9; if(prog>100)prog=100;
+    setRing(prog); rampCharge(prog);
+    if(prog>=100){ sealComplete(); return; }
+    actRaf=requestAnimationFrame(activateLoop);
+  }
+  function activateSeal(){
+    if(activating||sealed) return;
+    activating=true; scanner.classList.add('holding');
+    audio(); startCharge();
+    sealHint.textContent='Sincronizando tu escudo…';
+    activateLoop();
+  }
+  function sealComplete(){
+    sealed=true; activating=false;
+    scanner.classList.remove('holding'); scanner.classList.add('done');
+    stopCharge(); setRing(100);
+    if(actRaf){ cancelAnimationFrame(actRaf); actRaf=null; }
+    finger.textContent='✓';
+    sealHint.textContent='Escudo activado.';
+    $('#sealTag').textContent='● AEGIS sincronizado';
+    flashScreen(); sfxBoom();
+    var w=document.querySelector('#s-seal .wrap');
+    if(w){ w.classList.add('shake'); setTimeout(function(){ w.classList.remove('shake'); },500); }
+    // del escudo pasamos directo al feed de seguridad (el clímax + CTA)
+    setTimeout(function(){ go('feed'); startFeed(); },1000);
+  }
+  scanner.addEventListener('click',activateSeal);
+  $('#toStoreFinal').addEventListener('click',function(){ go('store'); });
+
+  /* cuenta regresiva de urgencia */
+  var cdSec=600, cdIv=null;
+  function fmtCd(s){ var m=Math.floor(s/60), x=s%60; return m+':'+(x<10?'0':'')+x; }
+  function paintCd(){ ['cdTime','cdShown','cdFeed'].forEach(function(id){ var e=document.getElementById(id); if(e) e.textContent=fmtCd(cdSec); }); }
+  function startCountdown(){ if(cdIv) return; paintCd(); cdIv=setInterval(function(){ cdSec--; if(cdSec<=0){ cdSec=0; clearInterval(cdIv); cdIv=null; } paintCd(); },1000); }
+
+  /* ===================== FEED DE SEGURIDAD ===================== */
+  var fcv=document.getElementById('feedCanvas');
+  var fctx=fcv?fcv.getContext('2d'):null;
+  var feedActive=false, feedRaf=null, feedT0=0, fW=0, fH=0, blips=[], feedTimeouts=[];
+  var feedTimer=null, feedSecs=0;
+
+  function feedSize(){ if(!fcv) return; fW=fcv.width=fcv.clientWidth||window.innerWidth; fH=fcv.height=fcv.clientHeight||window.innerHeight; }
+  window.addEventListener('resize',function(){ if(feedActive) feedSize(); });
+
+  function drawFeed(ts){
+    if(!feedActive||!fctx) return;
+    if(!feedT0) feedT0=ts;
+    var t=(ts-feedT0)/1000;
+    fctx.clearRect(0,0,fW,fH);
+    var cx=fW/2, cy=fH/2, R=Math.min(fW,fH)*0.42;
+    // rejilla
+    fctx.strokeStyle='rgba(255,42,54,0.06)'; fctx.lineWidth=1;
+    for(var gx=0; gx<fW; gx+=44){ fctx.beginPath(); fctx.moveTo(gx,0); fctx.lineTo(gx,fH); fctx.stroke(); }
+    for(var gy=0; gy<fH; gy+=44){ fctx.beginPath(); fctx.moveTo(0,gy); fctx.lineTo(fW,gy); fctx.stroke(); }
+    // círculos de radar + ejes
+    for(var r=1;r<=3;r++){ fctx.beginPath(); fctx.arc(cx,cy,R*r/3,0,Math.PI*2); fctx.strokeStyle='rgba(255,42,54,0.16)'; fctx.stroke(); }
+    fctx.beginPath(); fctx.moveTo(cx-R,cy); fctx.lineTo(cx+R,cy); fctx.moveTo(cx,cy-R); fctx.lineTo(cx,cy+R); fctx.strokeStyle='rgba(255,42,54,0.12)'; fctx.stroke();
+    // barrido del radar
+    var ang=t*2.1;
+    fctx.save(); fctx.translate(cx,cy);
+    for(var k=0;k<26;k++){
+      var a=ang-k*0.05;
+      fctx.beginPath(); fctx.moveTo(0,0); fctx.arc(0,0,R,a,a+0.06); fctx.closePath();
+      fctx.fillStyle='rgba(255,42,54,'+(0.16*(1-k/26))+')'; fctx.fill();
+    }
+    fctx.beginPath(); fctx.moveTo(0,0); fctx.lineTo(Math.cos(ang)*R,Math.sin(ang)*R);
+    fctx.strokeStyle='rgba(255,90,100,0.9)'; fctx.lineWidth=2; fctx.stroke();
+    fctx.restore();
+    // blips que brillan al pasar el barrido
+    for(var i=0;i<blips.length;i++){
+      var b=blips[i];
+      var bx=cx+Math.cos(b.a)*b.r*R, by=cy+Math.sin(b.a)*b.r*R;
+      var diff=((ang-b.a)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+      var glow=diff<0.45?1:Math.max(0,1-(diff-0.45)/2.2);
+      fctx.beginPath(); fctx.arc(bx,by,3+glow*2.5,0,Math.PI*2);
+      fctx.fillStyle='rgba(255,120,120,'+(0.18+glow*0.8)+')'; fctx.fill();
+    }
+    feedRaf=requestAnimationFrame(drawFeed);
+  }
+
+  function paintFeedTime(){
+    var el=document.getElementById('feedTime'); if(!el) return;
+    var h=Math.floor(feedSecs/3600), m=Math.floor(feedSecs/60)%60, s=feedSecs%60;
+    el.textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  }
+  function startFeedTimer(){ feedSecs=0; paintFeedTime(); feedTimer=setInterval(function(){ feedSecs++; paintFeedTime(); },1000); }
+  function stopFeedTimer(){ if(feedTimer){ clearInterval(feedTimer); feedTimer=null; } }
+
+  function logLine(txt,color){
+    var box=document.getElementById('feedLog'); if(!box) return;
+    var d=document.createElement('div'); d.textContent='> '+txt;
+    if(color) d.style.color=color; d.className='fade-up';
+    box.appendChild(d);
+  }
+  function clearFeedTimeouts(){ feedTimeouts.forEach(clearTimeout); feedTimeouts=[]; }
+
+  function runFeedSequence(){
+    clearFeedTimeouts();
+    var steps=[
+      [200,  function(){ logLine('INICIANDO PROTOCOLO DE VIGILANCIA…'); sfxGlitch(); }],
+      [1300, function(){ logLine('ESCANEANDO PERÍMETRO…'); }],
+      [2500, function(){ logLine('SEÑAL CIFRADA DETECTADA'); sfxBeep(); }],
+      [3500, function(){ document.getElementById('reticle').classList.add('lock'); document.getElementById('rlabel').textContent='SUJETO LOCALIZADO'; sfxGlitch(); }],
+      [4400, function(){ logLine('PERFIL VINCULADO: '+(userName?userName.toUpperCase():'TÚ')); voLine('feed_protected','Te he vinculado a mi sistema'+(userName?(', '+userName):'')+'. Desde este momento velo por tu seguridad, las veinticuatro horas. Estás protegido.'); }],
+      [5800, function(){ logLine('ESTADO: PROTEGIDO', '#36d399'); document.getElementById('rlabel').textContent='● PROTEGIDO'; flashScreen(); sfxBoom(); }],
+      [6800, function(){ document.getElementById('feedCta').classList.add('show'); }]
+    ];
+    steps.forEach(function(st){ feedTimeouts.push(setTimeout(function(){ if(feedActive) st[1](); }, st[0])); });
+  }
+
+  function startFeed(){
+    if(!fcv||!fctx){ go('store'); return; }
+    feedActive=true; feedT0=0; feedSize();
+    blips=[]; for(var i=0;i<6;i++) blips.push({a:Math.random()*Math.PI*2, r:0.22+Math.random()*0.72});
+    var lg=document.getElementById('feedLog'); if(lg) lg.innerHTML='';
+    document.getElementById('reticle').classList.remove('lock');
+    document.getElementById('rlabel').textContent='';
+    document.getElementById('feedCta').classList.remove('show');
+    feedRaf=requestAnimationFrame(drawFeed);
+    startFeedTimer();
+    runFeedSequence();
+  }
+  function stopFeed(){
+    feedActive=false;
+    if(feedRaf){ cancelAnimationFrame(feedRaf); feedRaf=null; }
+    stopFeedTimer(); clearFeedTimeouts();
+  }
+  if(document.getElementById('feedToStore')){
+    document.getElementById('feedToStore').addEventListener('click',function(){ go('store'); });
+  }
+
+  /* ===================== TIENDA ===================== */
+  var products=[
+    {tag:'alarma', ico:'📣', name:'Alarma personal 130dB', desc:'Cabe en el llavero. Un tirón y todos te escuchan.', price:399},
+    {tag:'curso', ico:'🥋', name:'Curso esencial de autodefensa', desc:'6 módulos en video para reaccionar sin congelarte.', price:1290},
+    {tag:'kit', ico:'🔦', name:'Kit EDC de bolsillo', desc:'Linterna táctica, silbato y multiusos. Listo para todo.', price:749},
+    {tag:'localizador', ico:'📍', name:'Localizador discreto', desc:'Comparte tu ubicación con tu círculo de confianza.', price:899},
+    {tag:'membresia', ico:'🛡️', name:'Membresía El Arte de Proteger', desc:'Comunidad, protocolos y acompañamiento mensual.', price:299},
+    {tag:'viaje', ico:'🚗', name:'Protocolo de viaje seguro', desc:'Guía + checklist para moverte protegido en la ciudad.', price:249}
+  ];
+  function money(n){ return '$'+n.toLocaleString('es-MX'); }
+  /* Beneficios reales del manual (sustituyen a los productos de ejemplo). */
+  var MANUAL_BENEFITS=[
+    {ico:'🧠', title:'Anticipa el peligro', desc:'Aprende a leer señales y situaciones antes de que se vuelvan una amenaza.'},
+    {ico:'⚡', title:'Reacciona sin congelarte', desc:'Protocolos claros para actuar con confianza en el momento que más importa.'},
+    {ico:'📋', title:'Plantillas y checklists', desc:'Herramientas prácticas, listas para usar en tu día a día.'}
+  ];
+  function buildStore(){
+    var g=$('#grid'); if(!g) return; g.innerHTML='';
+    var st=document.getElementById('storeTitle');
+    if(st) st.textContent = userName ? ('Tu protección empieza hoy, '+userName) : 'Tu protección empieza hoy';
+    var gs=document.getElementById('goShop'); if(gs){ gs.href = STORE_URL; }
+    MANUAL_BENEFITS.forEach(function(b){
+      var c=document.createElement('div'); c.className='card';
+      c.style.cursor='pointer';
+      c.innerHTML='<div class="ico">'+b.ico+'</div><h3>'+b.title+'</h3><div class="desc">'+b.desc+'</div>';
+      c.addEventListener('click',function(){ goShopUrl(); });
+      g.appendChild(c);
+    });
+  }
+  buildStore();
+
+  $('#restartBtn').addEventListener('click',function(){
+    codeRevealed=false;
+    $('#bar').style.width='0%';
+    // resetear activación del escudo
+    sealed=false; activating=false; prog=0; setRing(0);
+    scanner.classList.remove('done','holding');
+    finger.textContent='⏻';
+    sealHint.textContent='Toca el núcleo para activar AEGIS';
+    $('#sealTag').textContent='Último paso · activa tu escudo';
+    $('#sealCta').style.display='none';
+    // resetear feed de seguridad
+    stopFeed();
+    var lg=document.getElementById('feedLog'); if(lg) lg.innerHTML='';
+    document.getElementById('reticle').classList.remove('lock');
+    document.getElementById('rlabel').textContent='';
+    document.getElementById('feedCta').classList.remove('show');
+    // resetear evaluación
+    resetEval();
+    // resetear cuenta regresiva
+    if(cdIv){ clearInterval(cdIv); cdIv=null; }
+    cdSec=600; paintCd();
+    go('intro');
+  });
+
+  /* ===================== TOAST ===================== */
+  var toastT=null;
+  function showToast(msg){
+    var t=$('#toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(toastT); toastT=setTimeout(function(){ t.classList.remove('show'); },2200);
+  }
+
+  /* ===================== CANVAS · FONDO HUD ===================== */
+  var cv=$('#waves'), ctx=cv.getContext('2d'), W,H,t0=0, parts=[];
+  function initParts(){
+    parts=[]; var n=Math.min(80, Math.max(28, Math.floor(W*H/22000)));
+    for(var i=0;i<n;i++){ parts.push({x:Math.random()*W, y:Math.random()*H, vx:(Math.random()-.5)*0.28, vy:(Math.random()-.5)*0.28}); }
+  }
+  function resize(){ W=cv.width=innerWidth; H=cv.height=innerHeight; initParts(); }
+  window.addEventListener('resize',resize); resize();
+  function draw(ts){
+    t0=ts*0.001;
+    ctx.clearRect(0,0,W,H);
+    var cx=W/2, cy=H*0.5;
+
+    // rejilla en perspectiva (piso HUD)
+    var horizon=H*0.66;
+    ctx.lineWidth=1;
+    ctx.strokeStyle='rgba(255,42,54,0.05)';
+    for(var gx=-12; gx<=12; gx++){
+      ctx.beginPath(); ctx.moveTo(cx, horizon); ctx.lineTo(cx+gx*(W/9), H); ctx.stroke();
+    }
+    for(var d=1; d<=9; d++){
+      var yy=horizon + Math.pow(d/9,2.1)*(H-horizon);
+      ctx.beginPath(); ctx.moveTo(0,yy); ctx.lineTo(W,yy); ctx.stroke();
+    }
+
+    // red de partículas (constelación)
+    for(var i=0;i<parts.length;i++){
+      var p=parts[i]; p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1; if(p.y<0||p.y>H) p.vy*=-1;
+      for(var j=i+1;j<parts.length;j++){
+        var q=parts[j], dx=p.x-q.x, dy=p.y-q.y, dd=dx*dx+dy*dy;
+        if(dd<14000){ var a=0.13*(1-dd/14000); ctx.strokeStyle='rgba(255,64,74,'+a+')'; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke(); }
+      }
+      ctx.beginPath(); ctx.arc(p.x,p.y,1.5,0,Math.PI*2); ctx.fillStyle='rgba(255,95,105,0.55)'; ctx.fill();
+    }
+
+    // anillos radiales que respiran desde el centro
+    ctx.save(); ctx.translate(cx,cy);
+    for(var r=0;r<4;r++){
+      var rad=(t0*55 + r*130)%520;
+      ctx.beginPath(); ctx.arc(0,0,rad,0,Math.PI*2);
+      ctx.strokeStyle='rgba(255,42,54,'+(0.10*(1-rad/520))+')'; ctx.lineWidth=1.2; ctx.stroke();
+    }
+    ctx.restore();
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+
+})();
+</script>
+</body>
+</html>
