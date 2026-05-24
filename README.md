@@ -1,1 +1,1 @@
-# elartedelproteger-web
+# elartedelproteger-web — sitio web (AEGIS + manual)
