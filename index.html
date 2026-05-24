@@ -393,7 +393,8 @@
       <button class="btn" id="startBtn">⚡ Activar AEGIS</button>
       <button class="btn ghost" id="toStore1">Prefiero ver los productos directo</button>
     </div>
-    <p style="font-size:11px;color:var(--muted);max-width:330px">Experiencia inmersiva con sonido y voz. Puedes silenciarla o saltarla cuando quieras.</p>
+    <p style="font-size:12px;color:var(--accent);max-width:340px;font-weight:600">🔊 Sube el volumen y toca para activar la experiencia con voz.</p>
+    <p style="font-size:11px;color:var(--muted);max-width:340px">En iPhone, desactiva el modo silencio para escuchar. Puedes silenciar o saltar la intro cuando quieras.</p>
   </div>
 </section>
 
@@ -673,6 +674,7 @@
     try{
       if(!('speechSynthesis' in window)){ if(onend) setTimeout(onend,text.length*55); return; }
       window.speechSynthesis.cancel();
+      try{ window.speechSynthesis.resume(); }catch(e){}
       var u=new SpeechSynthesisUtterance(text);
       var v=selectedVoice||defaultVoice();
       if(v){ u.voice=v; u.lang=v.lang; } else { u.lang='es-419'; }
@@ -836,18 +838,32 @@
      CUALQUIER clic/toque/tecla en la página, sin que tenga que buscar un botón. */
   var autoAnswerTimer=null;
   var experienceStarted=false;
+  /* Desbloqueo de voz para móviles (iOS/Android): la síntesis de voz solo se
+     "desbloquea" si se llama DENTRO del primer gesto del usuario. Disparamos una
+     locución silenciosa para habilitarla y que luego AEGIS pueda hablar solo. */
+  var speechPrimed=false;
+  function primeSpeech(){
+    if(speechPrimed || !('speechSynthesis' in window)) return;
+    try{
+      window.speechSynthesis.resume();
+      var u=new SpeechSynthesisUtterance(' ');
+      u.volume=0; window.speechSynthesis.speak(u);
+      window.speechSynthesis.getVoices();
+      speechPrimed=true;
+    }catch(e){}
+  }
   function startExperience(){
     if(experienceStarted) return; experienceStarted=true;
     var ni=document.getElementById('nameInput');
     userName = ni ? (ni.value||'').trim().replace(/[<>]/g,'').slice(0,18) : '';
-    audio(); startAmbient(); sfxConnect();
+    audio(); startAmbient(); sfxConnect(); primeSpeech();
     if(window.speechSynthesis){ window.speechSynthesis.getVoices(); }
     go('connect'); runConnect();
   }
   $('#startBtn').addEventListener('click',startExperience);
 
   function onFirstGesture(e){
-    ensureSound(); audio(); // desbloquea el audio en el primer gesto del usuario
+    ensureSound(); audio(); primeSpeech(); // desbloquea audio Y voz en el primer gesto
     var t=e.target;
     var ctrl = (t && t.closest) ? t.closest('button, a, input, select, .pill, .vchip, .vpanel, .float-tr, .round') : null;
     if(current==='intro' && !ctrl){ startExperience(); }
