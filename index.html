@@ -830,13 +830,32 @@
   /* ===================== FLUJO ===================== */
   $('#toStore1').addEventListener('click',skipToStore);
 
-  $('#startBtn').addEventListener('click',function(){
+  /* === ARRANQUE AUTOMÁTICO ===
+     Los navegadores bloquean el audio hasta el primer gesto del usuario. Por eso
+     arrancamos la experiencia (con sonido y voz) en cuanto la persona hace
+     CUALQUIER clic/toque/tecla en la página, sin que tenga que buscar un botón. */
+  var autoAnswerTimer=null;
+  var experienceStarted=false;
+  function startExperience(){
+    if(experienceStarted) return; experienceStarted=true;
     var ni=document.getElementById('nameInput');
     userName = ni ? (ni.value||'').trim().replace(/[<>]/g,'').slice(0,18) : '';
     audio(); startAmbient(); sfxConnect();
     if(window.speechSynthesis){ window.speechSynthesis.getVoices(); }
     go('connect'); runConnect();
-  });
+  }
+  $('#startBtn').addEventListener('click',startExperience);
+
+  function onFirstGesture(e){
+    ensureSound(); audio(); // desbloquea el audio en el primer gesto del usuario
+    var t=e.target;
+    var ctrl = (t && t.closest) ? t.closest('button, a, input, select, .pill, .vchip, .vpanel, .float-tr, .round') : null;
+    if(current==='intro' && !ctrl){ startExperience(); }
+    document.removeEventListener('pointerdown', onFirstGesture, true);
+    document.removeEventListener('keydown', onFirstGesture, true);
+  }
+  document.addEventListener('pointerdown', onFirstGesture, true);
+  document.addEventListener('keydown', onFirstGesture, true);
 
   var connSteps=[
     'Inicializando núcleo AEGIS…',
@@ -854,12 +873,13 @@
       g.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
       var idx=Math.min(connSteps.length-1, Math.floor(p/26));
       if(idx!==i){ i=idx; line.textContent=connSteps[i]; sfxGlitch(); line.classList.add('glitch'); setTimeout(function(){line.classList.remove('glitch')},250); }
-      if(p>=100){ clearInterval(iv); setTimeout(function(){ go('call'); startRing(); },650); }
+      if(p>=100){ clearInterval(iv); setTimeout(function(){ go('call'); startRing(); if(autoAnswerTimer) clearTimeout(autoAnswerTimer); autoAnswerTimer=setTimeout(answerCall, 4500); },650); }
     },220);
   }
 
-  $('#answerBtn').addEventListener('click',function(){ stopRing(); sfxBeep(); go('message'); runMessage(); });
-  $('#declineBtn').addEventListener('click',function(){ stopRing(); revealCode(true); });
+  function answerCall(){ if(current!=='call') return; if(autoAnswerTimer){ clearTimeout(autoAnswerTimer); autoAnswerTimer=null; } stopRing(); sfxBeep(); go('message'); runMessage(); }
+  $('#answerBtn').addEventListener('click',answerCall);
+  $('#declineBtn').addEventListener('click',function(){ if(autoAnswerTimer){ clearTimeout(autoAnswerTimer); autoAnswerTimer=null; } stopRing(); revealCode(true); });
 
   var memberCode='ESCUDO-'+Math.floor(1000+Math.random()*9000);
   var userName='';
