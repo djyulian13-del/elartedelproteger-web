@@ -542,10 +542,11 @@
   /* ===================== AUDIO ===================== */
   var actx=null, master=null, muted=false, ambient=null;
   function audio(){
-    if(actx) return actx;
+    if(actx){ if(actx.state==='suspended'){ try{ actx.resume(); }catch(e){} } return actx; }
     try{
       actx=new (window.AudioContext||window.webkitAudioContext)();
       master=actx.createGain(); master.gain.value=muted?0:0.9; master.connect(actx.destination);
+      if(actx.state==='suspended'){ try{ actx.resume(); }catch(e){} }
     }catch(e){ actx=null; }
     return actx;
   }
