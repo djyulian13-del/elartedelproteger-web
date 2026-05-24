@@ -844,33 +844,39 @@
   var speechPrimed=false;
   function primeSpeech(){
     if(speechPrimed || !('speechSynthesis' in window)) return;
+    speechPrimed=true;
     try{
-      window.speechSynthesis.resume();
-      var u=new SpeechSynthesisUtterance(' ');
-      u.volume=0; window.speechSynthesis.speak(u);
       window.speechSynthesis.getVoices();
-      speechPrimed=true;
+      window.speechSynthesis.resume();
+      /* En iOS la voz SOLO se desbloquea con una locución REAL dentro del gesto
+         (las locuciones en volumen 0 las ignora). */
+      var u=new SpeechSynthesisUtterance('Conectando.');
+      var v=selectedVoice||defaultVoice();
+      if(v){ u.voice=v; u.lang=v.lang; } else { u.lang='es-MX'; }
+      u.rate=voiceRate; u.pitch=voicePitch; u.volume=muted?0:1;
+      window.speechSynthesis.speak(u);
     }catch(e){}
   }
   function startExperience(){
     if(experienceStarted) return; experienceStarted=true;
     var ni=document.getElementById('nameInput');
     userName = ni ? (ni.value||'').trim().replace(/[<>]/g,'').slice(0,18) : '';
-    audio(); startAmbient(); sfxConnect(); primeSpeech();
+    audio(); startAmbient(); sfxConnect();
     if(window.speechSynthesis){ window.speechSynthesis.getVoices(); }
     go('connect'); runConnect();
+    primeSpeech(); // desbloquear la voz DESPUÉS de go() para que no la cancele
   }
   $('#startBtn').addEventListener('click',startExperience);
 
   function onFirstGesture(e){
-    ensureSound(); audio(); primeSpeech(); // desbloquea audio Y voz en el primer gesto
+    ensureSound(); audio(); // desbloquea el audio en el primer gesto
     var t=e.target;
     var ctrl = (t && t.closest) ? t.closest('button, a, input, select, .pill, .vchip, .vpanel, .float-tr, .round') : null;
     if(current==='intro' && !ctrl){ startExperience(); }
-    document.removeEventListener('pointerdown', onFirstGesture, true);
+    document.removeEventListener('click', onFirstGesture, true);
     document.removeEventListener('keydown', onFirstGesture, true);
   }
-  document.addEventListener('pointerdown', onFirstGesture, true);
+  document.addEventListener('click', onFirstGesture, true);
   document.addEventListener('keydown', onFirstGesture, true);
 
   var connSteps=[
