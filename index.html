@@ -448,7 +448,7 @@
 <!-- ESCENA 5.3 · EVALUACIÓN DE RIESGO -->
 <section class="scene" id="s-eval">
   <div class="wrap">
-    <div class="eyebrow flicker">Evaluando tu nivel de riesgo</div>
+    <div class="eyebrow flicker">Evaluación profesional de seguridad · AEGIS</div>
     <div class="q-counter" id="qCounter">Pregunta 1 de 7</div>
     <h1 class="thin" id="qText" style="font-size:clamp(22px,5.4vw,32px)">…</h1>
     <div class="q-options" id="qOptions"></div>
@@ -964,44 +964,49 @@
     try{ navigator.clipboard.writeText(memberCode); ok=true; }catch(e){}
     showToast(ok?('Copiado: '+memberCode):memberCode);
   });
-  $('#toStore2').addEventListener('click',function(){ resetEval(); startEval(); startCountdown(); go('eval'); });
+  $('#toStore2').addEventListener('click',function(){ resetEval(); startEval(); startCountdown(); go('eval'); voLine('eval_intro','Antes de continuar, tengo que hacerte unas preguntas para analizar tu nivel de riesgo. Responde con sinceridad.'); });
 
   /* ===================== EVALUACIÓN DE RIESGO ===================== */
   var quiz=[
-    {q:'¿Con qué frecuencia te mueves solo o sola, de noche?', a:[
-      {t:'Casi nunca', tags:[], risk:0},
-      {t:'Algunas veces por semana', tags:['alarma'], risk:10},
-      {t:'Muy seguido', tags:['alarma','kit'], risk:20}
+    {q:'Al llegar a un lugar nuevo, ¿identificas las salidas y rutas de escape?', a:[
+      {t:'Siempre, es lo primero que hago', tags:['membresia'], risk:0},
+      {t:'A veces, si me acuerdo', tags:[], risk:12},
+      {t:'Casi nunca lo pienso', tags:['curso'], risk:22}
     ]},
-    {q:'¿Cómo te trasladas normalmente?', a:[
-      {t:'En auto propio', tags:[], risk:5},
-      {t:'Transporte público o apps', tags:['viaje','localizador'], risk:15},
-      {t:'Caminando buena parte del trayecto', tags:['alarma','kit'], risk:15}
+    {q:'¿Qué tan predecibles son tus horarios y rutas diarias?', a:[
+      {t:'Varío rutas y horarios a propósito', tags:[], risk:0},
+      {t:'Más o menos, sin pensarlo mucho', tags:['viaje'], risk:12},
+      {t:'Hago lo mismo, a la misma hora, todos los días', tags:['viaje'], risk:22}
     ]},
-    {q:'¿Alguna vez te has sentido en peligro o seguido/a?', a:[
-      {t:'Nunca', tags:[], risk:0},
-      {t:'Una vez', tags:['kit'], risk:12},
-      {t:'Más de una vez', tags:['curso','alarma'], risk:25}
+    {q:'¿Compartes tu ubicación en tiempo real o tus planes en redes sociales?', a:[
+      {t:'Nunca, cuido esa información', tags:[], risk:0},
+      {t:'A veces publico dónde estoy', tags:['localizador'], risk:14},
+      {t:'Sí, comparto casi todo en el momento', tags:['localizador'], risk:24}
     ]},
-    {q:'¿Qué llevas hoy contigo para protegerte?', a:[
-      {t:'Nada, la verdad', tags:['kit','curso'], risk:20},
-      {t:'Algo básico (gas, silbato…)', tags:['kit'], risk:8},
-      {t:'Voy preparado/a', tags:['membresia'], risk:0}
+    {q:'Si alguien te estuviera siguiendo, ¿lo notarías?', a:[
+      {t:'Sí, sé reconocer las señales', tags:['membresia'], risk:2},
+      {t:'Tal vez, no estoy seguro/a', tags:['curso'], risk:14},
+      {t:'No sabría cómo darme cuenta', tags:['curso'], risk:24}
     ]},
-    {q:'Si te agarraran por sorpresa, ¿sabrías reaccionar?', a:[
-      {t:'No sabría qué hacer', tags:['curso'], risk:24},
-      {t:'Más o menos', tags:['curso'], risk:12},
-      {t:'Sí, con confianza', tags:['membresia'], risk:2}
+    {q:'Si te abordaran por sorpresa, ¿sabrías cómo reaccionar?', a:[
+      {t:'Sí, he entrenado para eso', tags:['membresia'], risk:2},
+      {t:'Reaccionaría por instinto, sin método', tags:['curso'], risk:15},
+      {t:'Me congelaría, no sabría qué hacer', tags:['curso'], risk:25}
     ]},
-    {q:'¿Para quién es esta protección?', a:[
-      {t:'Para mí', tags:['curso','kit'], risk:0},
-      {t:'Para mi familia', tags:['membresia','localizador'], risk:5},
-      {t:'Para alguien que quiero', tags:['localizador','membresia'], risk:5}
+    {q:'Al trasladarte (auto, transporte o apps), ¿tomas medidas de seguridad?', a:[
+      {t:'Sí: verifico, aviso a alguien y voy atento/a', tags:[], risk:2},
+      {t:'Algunas, no siempre', tags:['viaje'], risk:13},
+      {t:'La verdad, no tomo precauciones', tags:['viaje','curso'], risk:23}
     ]},
-    {q:'En tu día a día, ¿qué tan seguro/a te sientes?', a:[
-      {t:'Muy seguro/a', tags:[], risk:0},
-      {t:'Normal', tags:['kit'], risk:10},
-      {t:'Inseguro/a a menudo', tags:['curso','membresia'], risk:22}
+    {q:'¿Tienes un plan y contactos de emergencia listos para actuar de inmediato?', a:[
+      {t:'Sí, definido y practicado', tags:['membresia'], risk:0},
+      {t:'Tengo la idea, pero nada concreto', tags:[], risk:13},
+      {t:'No tengo ningún plan', tags:['curso'], risk:23}
+    ]},
+    {q:'En tu día a día, ¿qué tan preparado/a te sientes para protegerte?', a:[
+      {t:'Muy preparado/a y con confianza', tags:['membresia'], risk:0},
+      {t:'Normal, podría mejorar', tags:[], risk:12},
+      {t:'Poco o nada preparado/a', tags:['curso'], risk:24}
     ]}
   ];
   var scores={}, riskScore=0;
