@@ -201,7 +201,7 @@
 
   /* controles flotantes */
   .float-tl{position:fixed; top:16px; left:18px; z-index:70; font-family:var(--mono); font-size:11px; letter-spacing:.2em; color:var(--muted); text-transform:uppercase}
-  .float-tr{position:fixed; top:14px; right:16px; z-index:70; display:flex; gap:8px}
+  .float-tr{position:fixed; top:14px; right:16px; z-index:70; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:10px; max-width:66vw} .pill-dl{background:linear-gradient(180deg,#ff4d57,#e21621); color:#fff; border-color:transparent; font-weight:700; text-decoration:none}
   .pill{
     cursor:pointer; border:1px solid rgba(255,255,255,.12); background:rgba(0,0,0,.3);
     color:var(--muted); font-size:12px; padding:7px 12px; border-radius:99px; backdrop-filter:blur(6px); transition:.2s;
@@ -358,7 +358,7 @@
 
 <div class="float-tl flicker">EAP · FRECUENCIA SEGURA</div>
 <div class="protobar" id="protobar"><span class="pb-label" id="pbLabel">Protocolo</span><span class="pb-segs" id="pbSegs"></span></div>
-<div class="float-tr">
+<div class="float-tr"><a class="pill pill-dl" href="https://app.elartedelproteger.com" target="_blank" rel="noopener">Descargar app</a>
   <div class="pill" id="voiceBtn">🎙 Voz</div>
   <div class="pill" id="muteBtn">🔊 Sonido</div>
   <div class="pill" id="skipBtn">Saltar intro ✕</div>
